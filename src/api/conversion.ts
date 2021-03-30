@@ -2,12 +2,19 @@ import cache from '../lib/cache';
 
 const APIS = {
   LATEST: 'https://api.exchangeratesapi.io/latest',
+  HISTORY: 'https://api.exchangeratesapi.io/history',
 };
 
 export interface ExchangeRateResponse {
   rates: { [key: string]: number };
   base: string;
   date: string;
+}
+export interface HistoryResponse {
+  rates: { [key: string]: { [key: string]: number } };
+  start_at: string;
+  base: string;
+  end_at: string;
 }
 
 let EXCHANGE_RATES: ExchangeRateResponse | null = null;
@@ -17,10 +24,6 @@ export const convert = async (
   sourceCurrency: string,
   targetCurrency: string
 ) => {
-  //   exchangeRates.rates[exchangeRates.base] = 1;
-  console.log(
-    `Going to convert ${sourceAmount} ${sourceCurrency} to ${targetCurrency}`
-  );
   removeExpiredRates();
   let cachedRates = localStorage.getItem('EXCHANGE_RATES');
   EXCHANGE_RATES = cachedRates ? JSON.parse(cachedRates).value : null;
@@ -31,23 +34,17 @@ export const convert = async (
   }
 
   EXCHANGE_RATES.rates[EXCHANGE_RATES.base] = 1;
-  console.log({ EXCHANGE_RATES });
 
   const sourceToBaseExchangeRate = EXCHANGE_RATES.rates[sourceCurrency];
   const targetToBaseExchangeRate = EXCHANGE_RATES.rates[targetCurrency];
 
-  console.log({ sourceToBaseExchangeRate });
-  console.log({ targetToBaseExchangeRate });
-
   const sourceToTargetExchangeRate =
     targetToBaseExchangeRate / sourceToBaseExchangeRate;
-
-  console.log({ sourceToTargetExchangeRate });
 
   return sourceAmount * sourceToTargetExchangeRate;
 };
 
-const getExchangeRates = (): Promise<ExchangeRateResponse> =>
+export const getExchangeRates = (): Promise<ExchangeRateResponse> =>
   fetch(APIS.LATEST)
     .then(function (response) {
       if (response.status !== 200) {
@@ -59,7 +56,6 @@ const getExchangeRates = (): Promise<ExchangeRateResponse> =>
 
       // Examine the text in the response
       return response.json().then(function (data) {
-        // console.log(data);
         return data;
       });
     })
@@ -69,4 +65,25 @@ const getExchangeRates = (): Promise<ExchangeRateResponse> =>
 
 const removeExpiredRates = () => {
   cache.removeExpiredItem('EXCHANGE_RATES');
+};
+
+export const getHistoricalData = (
+  startAt: string,
+  endAt: string
+): Promise<HistoryResponse> => {
+  return fetch(`${APIS.HISTORY}?start_at=${startAt}&end_at=${endAt} `).then(
+    (response) => {
+      if (response.status !== 200) {
+        console.log(
+          'Looks like there was a problem. Status Code: ' + response.status
+        );
+        return;
+      }
+
+      // Examine the text in the response
+      return response.json().then(function (data) {
+        return data;
+      });
+    }
+  );
 };

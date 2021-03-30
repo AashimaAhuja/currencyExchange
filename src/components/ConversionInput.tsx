@@ -6,18 +6,25 @@ interface ConversionInputProps {
   currency: string;
   onAmountChange: (amount: string) => void;
   onCurrencyChange: (currency: string) => void;
+  currencies: string[];
+  labelPosition?: 'left' | 'right';
 }
 
-const currencies = ['USD', 'EUR', 'INR'];
-
-const options = currencies.map((item) => ({
-  key: item,
-  text: item,
-  value: item,
-}));
-
 const ConversionInput: React.FC<ConversionInputProps> = (props) => {
-  const { value, currency, onAmountChange, onCurrencyChange } = props;
+  const {
+    value,
+    currency,
+    onAmountChange,
+    onCurrencyChange,
+    currencies,
+    labelPosition = 'right',
+  } = props;
+
+  const options = currencies.map((item) => ({
+    key: item,
+    text: item,
+    value: item,
+  }));
 
   const currencyChange = (event: any, data: any) => {
     const { value: currency } = data;
@@ -25,7 +32,6 @@ const ConversionInput: React.FC<ConversionInputProps> = (props) => {
   };
 
   const valueChange = (event: any, data: any) => {
-    console.log('Value', data);
     onAmountChange(data.value);
   };
 
@@ -33,6 +39,7 @@ const ConversionInput: React.FC<ConversionInputProps> = (props) => {
     <Input
       label={
         <Dropdown
+          scrolling
           options={options}
           onChange={currencyChange}
           value={currency}
@@ -40,8 +47,9 @@ const ConversionInput: React.FC<ConversionInputProps> = (props) => {
       }
       value={value}
       onChange={valueChange}
-      labelPosition="right"
+      labelPosition={labelPosition}
       placeholder="Choose amount"
+      className="margin-end--16"
     />
   );
 };
