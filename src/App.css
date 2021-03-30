@@ -31,3 +31,8 @@
 .margin-top--16 {
   margin-top: 16px;
 }
+.currency-converter {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
