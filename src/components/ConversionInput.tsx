@@ -2,9 +2,9 @@ import React from 'react';
 import { Dropdown, Input } from 'semantic-ui-react';
 
 interface ConversionInputProps {
-  value: string;
+  value: number;
   currency: string;
-  onAmountChange: (amount: string) => void;
+  onAmountChange: (amount: number) => void;
   onCurrencyChange: (currency: string) => void;
   currencies: string[];
   labelPosition?: 'left' | 'right';
@@ -50,6 +50,7 @@ const ConversionInput: React.FC<ConversionInputProps> = (props) => {
       labelPosition={labelPosition}
       placeholder="Choose amount"
       className="margin-end--16"
+      type="number"
     />
   );
 };

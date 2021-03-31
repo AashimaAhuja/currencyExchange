@@ -33,7 +33,7 @@ const HistoricalData: React.FC<HistoricalDataProps> = (props) => {
             placeholder="Date"
             type="date"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={(e, data) => setStartDate(data.value)}
           />
         </div>
         <div className="margin-end--16">
@@ -44,7 +44,7 @@ const HistoricalData: React.FC<HistoricalDataProps> = (props) => {
             placeholder="Date"
             type="date"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={(e, data) => setEndDate(data.value)}
           />
         </div>
         <div className="margin-end--16">

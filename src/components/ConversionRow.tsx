@@ -1,78 +1,78 @@
 import { useEffect, useState } from 'react';
 import ConversionInput from './ConversionInput';
 import { convert } from '../api/conversion';
+import debounce from '../lib/debounce';
 
 interface ConversionRowProps {
   currencies: string[];
 }
 
+const toFixedFloat = (value) => parseFloat(value.toFixed(2));
+
 const ConversionRow: React.FC<ConversionRowProps> = ({ currencies }) => {
   const [source, setSource] = useState({
-    value: '1000',
+    isDirty: true,
+    value: 1000,
     currency: 'EUR',
   });
   const [target, setTarget] = useState({
-    value: '0',
+    isDirty: false,
+    value: 0,
     currency: 'USD',
   });
 
   useEffect(() => {
-    let sourceValue = parseFloat(source.value || '0');
-    if (sourceValue !== 0) {
-      convert(sourceValue, source.currency, target.currency).then((result) => {
-        setTarget({
-          value: result.toString(),
-          currency: target.currency,
+    const { value } = source;
+    if (source.isDirty) {
+      value &&
+        convert(value, source.currency, target.currency).then((result) => {
+          setTarget({
+            ...target,
+            value: toFixedFloat(result),
+          });
         });
+
+      setSource({
+        ...source,
+        isDirty: false,
       });
     }
-  }, []);
+  }, [source.isDirty]);
+
+  useEffect(() => {
+    let { value } = target;
+    if (target.isDirty) {
+      value &&
+        convert(value, target.currency, source.currency).then((result) => {
+          setSource({
+            ...source,
+            value: toFixedFloat(result),
+            isDirty: false,
+          });
+        });
+      setTarget({
+        ...target,
+        isDirty: false,
+      });
+    }
+  }, [target.isDirty]);
 
   const onSourceCurrencyChange = async (currency: string) => {
-    setSource({ value: source.value, currency });
-    let sourceValue = parseFloat(source.value || '0');
-    if (sourceValue !== 0) {
-      const result = await convert(sourceValue, currency, target.currency);
-      setTarget((prevState) => ({
-        value: result.toString(),
-        currency: target.currency,
-      }));
-    }
+    setSource({ ...source, currency, isDirty: true });
+  };
+
+  const onSourceAmountChange = async (value: number) => {
+    setSource({ ...source, value, isDirty: true });
   };
 
   const onTargetCurrencyChange = async (currency: string) => {
-    setTarget({ value: target.value, currency });
-    let sourceValue = parseFloat(source.value || '0');
-    if (sourceValue !== 0) {
-      const result = await convert(sourceValue, source.currency, currency);
-      setTarget({ value: result.toString(), currency });
-    }
-  };
-  const onSourceAmountChange = async (value: string) => {
-    setSource({ value, currency: source.currency });
-    let sourceValue = parseFloat(value || '0');
-    if (sourceValue !== 0) {
-      const result = await convert(
-        sourceValue,
-        source.currency,
-        target.currency
-      );
-      setTarget({ value: result.toString(), currency: target.currency });
-    }
+    setTarget({ ...target, currency, isDirty: true });
   };
 
-  const onTargetAmountChange = async (value: string) => {
-    setTarget({ value, currency: target.currency });
-    let sourceValue = parseFloat(value || '0');
-    if (sourceValue !== 0) {
-      const result = await convert(
-        sourceValue,
-        target.currency,
-        source.currency
-      );
-      setSource({ value: result.toString(), currency: source.currency });
-    }
+  const onTargetAmountChange = async (value: number) => {
+    setTarget({ ...target, value, isDirty: true });
   };
+
   return (
     <>
       <ConversionInput

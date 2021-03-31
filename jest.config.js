@@ -5,12 +5,9 @@ module.exports = {
             isolatedModules: 'true',
         }
     },
-    // transform: {
-    //     '.(ts|tsx)': 'babel-jest',
-    // },
     transform: {
         '.(ts|tsx)': 'ts-jest',
     },
     testMatch: ['<rootDir>/src/**/__tests__/**/*.(ts|js)?(x)', '<rootDir>/src/**/?(*.)(spec|test).(ts|js)?(x)'],
-    moduleFileExtensions: ['ts', 'tsx'],
+    moduleFileExtensions: ['ts', 'tsx', 'js'],
 };
