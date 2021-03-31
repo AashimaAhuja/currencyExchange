@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import ConversionInput from './ConversionInput';
 import { convert } from '../api/conversion';
-import debounce from '../lib/debounce';
 
 interface ConversionRowProps {
   currencies: string[];

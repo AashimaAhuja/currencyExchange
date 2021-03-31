@@ -4,8 +4,6 @@ import 'semantic-ui-css/semantic.min.css';
 import HistoricalData from './components/HistoricalData';
 import ConversionRow from './components/ConversionRow';
 import { getExchangeRates } from './api/conversion';
-import { Button, Icon } from 'semantic-ui-react';
-
 import { CurrencyConverter } from './components/CurrencyConverter';
 
 function App() {
