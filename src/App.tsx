@@ -10,10 +10,14 @@ function App() {
   const [currencies, setCurrencies] = useState<string[]>([]);
 
   useEffect(() => {
-    getExchangeRates().then((data) => {
-      const { base, rates } = data;
-      setCurrencies([base, ...Object.keys(rates)].sort());
-    });
+    getExchangeRates()
+      .then((data) => {
+        const { base, rates } = data;
+        setCurrencies([base, ...Object.keys(rates)].sort());
+      })
+      .catch((error) => {
+        console.log('Oops ! some error occurred');
+      });
   }, []);
 
   return (

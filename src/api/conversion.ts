@@ -1,8 +1,10 @@
 import cache from '../lib/cache';
 
+const ACCESS_KEY = 'ed46e461f31982b318016881517be2d2';
+
 const APIS = {
-  LATEST: 'https://api.exchangeratesapi.io/latest',
-  HISTORY: 'https://api.exchangeratesapi.io/history',
+  LATEST: `http://api.exchangeratesapi.io/v1/latest?access_key=${ACCESS_KEY}`,
+  HISTORY: `http://api.exchangeratesapi.io/v1/timeseries?access_key=${ACCESS_KEY}`,
 };
 
 export interface ExchangeRateResponse {
@@ -71,7 +73,7 @@ export const getHistoricalData = (
   startAt: string,
   endAt: string
 ): Promise<HistoryResponse> => {
-  return fetch(`${APIS.HISTORY}?start_at=${startAt}&end_at=${endAt} `).then(
+  return fetch(`${APIS.HISTORY}&start_at=${startAt}&end_at=${endAt} `).then(
     (response) => {
       if (response.status !== 200) {
         console.log(

@@ -36,6 +36,7 @@ const ConversionRow: React.FC<ConversionRowProps> = ({ currencies }) => {
         isDirty: false,
       });
     }
+    // eslint-disable-next-line
   }, [source.isDirty]);
 
   useEffect(() => {
@@ -54,6 +55,7 @@ const ConversionRow: React.FC<ConversionRowProps> = ({ currencies }) => {
         isDirty: false,
       });
     }
+    // eslint-disable-next-line
   }, [target.isDirty]);
 
   const onSourceCurrencyChange = async (currency: string) => {
