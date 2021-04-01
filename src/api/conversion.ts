@@ -1,5 +1,6 @@
 import cache from '../lib/cache';
-
+import { latestAPIMockDate } from '../mock/latest';
+import { generateHistoricalData } from '../mock/historicalData';
 const ACCESS_KEY = 'ed46e461f31982b318016881517be2d2';
 
 const APIS = {
@@ -55,7 +56,6 @@ export const getExchangeRates = (): Promise<ExchangeRateResponse> =>
         );
         return;
       }
-
       // Examine the text in the response
       return response.json().then(function (data) {
         return data;
@@ -63,6 +63,8 @@ export const getExchangeRates = (): Promise<ExchangeRateResponse> =>
     })
     .catch(function (err) {
       console.log('Fetch Error :-S', err);
+      console.log('Returning static data');
+      return latestAPIMockDate;
     });
 
 const removeExpiredRates = () => {
@@ -73,19 +75,23 @@ export const getHistoricalData = (
   startAt: string,
   endAt: string
 ): Promise<HistoryResponse> => {
-  return fetch(`${APIS.HISTORY}&start_at=${startAt}&end_at=${endAt} `).then(
-    (response) => {
+  return fetch(`${APIS.HISTORY}&start_at=${startAt}&end_at=${endAt} `)
+    .then((response) => {
       if (response.status !== 200) {
         console.log(
           'Looks like there was a problem. Status Code: ' + response.status
         );
-        return;
+
+        return generateHistoricalData(startAt, endAt);
       }
 
       // Examine the text in the response
       return response.json().then(function (data) {
         return data;
       });
-    }
-  );
+    })
+    .catch(() => {
+      console.log('caching history data');
+      return generateHistoricalData(startAt, endAt);
+    });
 };

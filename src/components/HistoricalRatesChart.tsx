@@ -9,6 +9,7 @@ const HistoricalRatesChart = (props: any) => {
 
   useEffect(() => {
     getHistoricalData(startDate, endDate).then((data) => {
+      console.log({ data });
       setHistoryData(data);
     });
   }, [currency, startDate, endDate]);

@@ -5,6 +5,7 @@ import HistoricalData from './components/HistoricalData';
 import ConversionRow from './components/ConversionRow';
 import { getExchangeRates } from './api/conversion';
 import { CurrencyConverter } from './components/CurrencyConverter';
+import { latestAPIMockDate } from './mock/latest';
 
 function App() {
   const [currencies, setCurrencies] = useState<string[]>([]);
@@ -12,11 +13,13 @@ function App() {
   useEffect(() => {
     getExchangeRates()
       .then((data) => {
-        const { base, rates } = data;
-        setCurrencies([base, ...Object.keys(rates)].sort());
+        const { rates } = data;
+        setCurrencies(Object.keys(rates));
       })
       .catch((error) => {
         console.log('Oops ! some error occurred');
+        const { rates } = latestAPIMockDate;
+        setCurrencies(Object.keys(rates));
       });
   }, []);
 
