@@ -37,7 +37,6 @@ export const generateHistoricalData = (startDate, endDate) => {
         const nextDay = new Date(today.getTime() + 8640000);
         today = nextDay;
     }
-    console.log(rates);
     response['rates'] = rates;
     return response;
 
